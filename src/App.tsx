@@ -7,6 +7,7 @@ import ReviewInput from './components/ReviewInput';
 import Modal from './components/Modal';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { SlRefresh, SlClock } from "react-icons/sl";
 
 export const App = () =>  {
 	const [movies, setMovies] = useState<movieItem[]>([]);
@@ -62,7 +63,7 @@ export const App = () =>  {
     setFormattedMovies([]);
     setSelectedMovie(null);
     fetchData();
-  }
+  };
 
   const formatData = () => {
     const formattedData = movies.map((movie) => ({
@@ -73,54 +74,66 @@ export const App = () =>  {
     setFormattedMovies(formattedData);
   };
  
-  const columns: GridColDef<(typeof formattedMovies)[number]>[] = [
+  const mobileColumns: GridColDef<(typeof formattedMovies)[number]>[] = [
     { 
       field: 'title', 
       headerName: 'Title', 
-      width: 150, 
+      width: 200, 
       editable: false 
     },
     {
       field: 'averageReview',
       headerName: 'Rating',
-      width: 150,
+      width: 120,
       editable: false,
     },
+  ];
+
+  const desktopColumns: GridColDef<(typeof formattedMovies)[number]>[] = [
+    ...mobileColumns,
     {
       field: 'filmCompany',
       headerName: 'Film Company',
-      width: 150,
+      width: 200,
       editable: false,
     }
   ];
 
   return (
+    <Box sx={{margin: '10%'}}>
     <div>
-      <h2>Welcome to Movie database!</h2>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <h1 style={{fontSize: '1.2rem'}}>Welcome to Movie database!</h1>
+        <Button onClick={refreshData}>{isLoading ? <SlClock /> : <SlRefresh />}</Button> 
+      </div> 
       
-      <Box sx={{ height: 400, width: '100%' }}>
-        {(movies.length && movieCompanies.length) ?
-        (<DataGrid
-          rows={formattedMovies}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+      <Box sx={{ 
+        height: isMobile ? 300 : 400, 
+        width: '100%', 
+        overflowX: isMobile ? 'auto' : 'hidden' 
+      }}>
+        {
+        (movies.length && movieCompanies.length) ?
+          (<DataGrid
+            rows={formattedMovies}
+            columns={isMobile ? mobileColumns : desktopColumns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          pageSizeOptions={[5]}
-          onRowClick={(params) => {
-            console.log(params.row);
-            setSelectedMovie(params.row);
-            setOpen(true);
-          }}
-        />) 
+            }}
+            pageSizeOptions={[5]}
+            onRowClick={(params) => {
+              setSelectedMovie(params.row);
+              setOpen(true);
+            }}
+          />) 
         : error && <p style={{ color: 'red' }}>{error}</p>
       }
     </Box>
-    <Button onClick={refreshData}>{isLoading ? "Loading..." : "Refresh Data"}</Button>  
+
 
     <div>
       {selectedMovie && (
@@ -132,5 +145,6 @@ export const App = () =>  {
       )}
     </div>
   </div>
+  </Box>
   );
 }
