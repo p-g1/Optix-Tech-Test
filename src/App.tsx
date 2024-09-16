@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { movieItem, movieCompanyItem } from './types';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import ReviewInput from './ReviewInput';
+import Modal from './Modal';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export const App = () =>  {
 	const [movies, setMovies] = useState<movieItem[]>([]);
@@ -10,6 +15,10 @@ export const App = () =>  {
 	const [selectedMovie, setSelectedMovie] = useState<movieItem | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+
+	const theme = useTheme();
+	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 	useEffect(() => {
 		fetchData();
@@ -47,6 +56,14 @@ export const App = () =>  {
 		}
 	};
 
+  const refreshData = () => {
+    setMovies([]);
+    setMovieCompanies([]);
+    setFormattedMovies([]);
+    setSelectedMovie(null);
+    fetchData();
+  }
+
   const formatData = () => {
     const formattedData = movies.map((movie) => ({
       ...movie,
@@ -54,14 +71,6 @@ export const App = () =>  {
       averageReview: Number((movie.reviews.reduce((acc, i) => acc + i, 0) / movie.reviews.length).toFixed(1))
     }));
     setFormattedMovies(formattedData);
-  };
-
-  const refreshButton = (buttonText: any) => {
-    if (movieCompanies) {
-      return <button>{buttonText}</button>
-    } else {
-      return <p>No movies loaded yet</p>
-    }   
   };
  
   const columns: GridColDef<(typeof formattedMovies)[number]>[] = [
@@ -85,13 +94,13 @@ export const App = () =>  {
     }
   ];
 
-
-
   return (
     <div>
-        <h2>Welcome to Movie database!</h2>
+      <h2>Welcome to Movie database!</h2>
+      
       <Box sx={{ height: 400, width: '100%' }}>
-      <DataGrid
+      {(movies.length && movieCompanies.length) ?
+       (<DataGrid
         rows={formattedMovies}
         columns={columns}
         initialState={{
@@ -102,23 +111,28 @@ export const App = () =>  {
           },
         }}
         pageSizeOptions={[5]}
-        disableRowSelectionOnClick
-      />
+        onRowClick={(params) => {
+          console.log(params.row);
+          setSelectedMovie(params.row);
+        }}
+      />) 
+      : error && <p style={{ color: 'red' }}>{error}</p>
+    }
     </Box>
     
-      {refreshButton("Refresh")}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    
+      <Button onClick={refreshData}>{isLoading ? "Loading..." : "Refresh Data"}</Button>
+      
       
       <div>
-       {selectedMovie ? selectedMovie.title as any ? "You have selected " +  selectedMovie.title  as any : "No Movie Title" : "No Movie Selected"}
-       {selectedMovie && <p>Please leave a review below</p> }
-       {selectedMovie && 
-        <form onSubmit={() => {}}>
-          <label>
-          Review:
-          <input type="text"/>
-        </label>
-        </form>}
+       
+       {selectedMovie && (
+         isMobile ? (
+           !open && <Modal movieId={selectedMovie.id} selectedMovie={selectedMovie} />
+         ) : (
+           <ReviewInput movieId={selectedMovie.id} selectedMovie={selectedMovie} />
+         )
+       )}
       </div>
     </div>
   );
