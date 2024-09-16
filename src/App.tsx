@@ -15,7 +15,7 @@ export const App = () =>  {
 	const [selectedMovie, setSelectedMovie] = useState<movieItem | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(false); //implement
+  const [open, setOpen] = useState(false);
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -99,41 +99,38 @@ export const App = () =>  {
       <h2>Welcome to Movie database!</h2>
       
       <Box sx={{ height: 400, width: '100%' }}>
-      {(movies.length && movieCompanies.length) ?
-       (<DataGrid
-        rows={formattedMovies}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
+        {(movies.length && movieCompanies.length) ?
+        (<DataGrid
+          rows={formattedMovies}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[5]}
-        onRowClick={(params) => {
-          console.log(params.row);
-          setSelectedMovie(params.row);
-        }}
-      />) 
-      : error && <p style={{ color: 'red' }}>{error}</p>
-    }
+          }}
+          pageSizeOptions={[5]}
+          onRowClick={(params) => {
+            console.log(params.row);
+            setSelectedMovie(params.row);
+            setOpen(true);
+          }}
+        />) 
+        : error && <p style={{ color: 'red' }}>{error}</p>
+      }
     </Box>
-    
-    
-      <Button onClick={refreshData}>{isLoading ? "Loading..." : "Refresh Data"}</Button>
-      
-      
-      <div>
-       
-       {selectedMovie && (
-         isMobile ? (
-           !open && <Modal movieId={selectedMovie.id} selectedMovie={selectedMovie} />
-         ) : (
-           <ReviewInput movieId={selectedMovie.id} selectedMovie={selectedMovie} />
-         )
-       )}
-      </div>
+    <Button onClick={refreshData}>{isLoading ? "Loading..." : "Refresh Data"}</Button>  
+
+    <div>
+      {selectedMovie && (
+        isMobile ? (
+          open && <Modal movieId={selectedMovie.id} selectedMovie={selectedMovie} open={open} setOpen={setOpen} />
+        ) : (
+          <ReviewInput movieId={selectedMovie.id} selectedMovie={selectedMovie} />
+        )
+      )}
     </div>
+  </div>
   );
 }

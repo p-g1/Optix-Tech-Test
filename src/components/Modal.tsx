@@ -15,9 +15,8 @@ import { movieItem } from '../types/types';
 //   p: 4,
 // };
 
-export default function BasicModal({ movieId, selectedMovie }: { movieId: string, selectedMovie: movieItem }) {
-  const [open, setOpen] = useState(true);
-  const handleOpen = () => setOpen(true);
+export default function BasicModal({ movieId, selectedMovie, open, setOpen }: { movieId: string, selectedMovie: movieItem, open: boolean, setOpen: (open: boolean) => void }) {
+
   const handleClose = () => setOpen(false);
 
   return (
