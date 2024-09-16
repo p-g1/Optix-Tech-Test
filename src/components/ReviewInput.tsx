@@ -1,26 +1,27 @@
 import { useState } from 'react';
 import { Button, Box, TextField, Typography } from '@mui/material';
+
 import { movieItem } from '../types/types';
 
-interface ReviewInputProps {
+type ReviewInputProps = {
   movieId: string;
   selectedMovie: movieItem;
-}
+};
 
-export default function ReviewInput({ movieId, selectedMovie }: ReviewInputProps) {
+const ReviewInput = ({ movieId, selectedMovie }: ReviewInputProps): JSX.Element => {
   const [review, setReview] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (review.length > 100) {
       setError('Review must be 100 characters or less');
       return;
-    }
+    };
     if (review.length === 0) {
       setError('Cannot submit an empty review');
       return;
-    }
+    };
 
     try {
       const response = await fetch('http://localhost:3000/submitReview', {
@@ -41,38 +42,45 @@ export default function ReviewInput({ movieId, selectedMovie }: ReviewInputProps
       setReview('');
       setError(null);
       
-      // You might want to add some success feedback here
     } catch (error) {
       setError('Failed to submit review. Please try again.');
     }
   };
 
   return (
-    <>
-    {selectedMovie ? selectedMovie.title as any ? "You have selected " +  selectedMovie.title  as any : "No Movie Title" : "No Movie Selected"}
-       {selectedMovie && <p>Please leave a review in the box below</p> }
-    <Box
-      component="form"
-      sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}
-      noValidate
-      autoComplete="off"
-    >
-      <div>
-        <TextField
-          id="outlined-multiline-static"
-          label="Review"
-          multiline
-          rows={4}
-          value={review}
-          onChange={(e) => setReview(e.target.value)}
-          placeholder="Please leave a review"
-          error={!!error}
-          helperText={error || `${review.length}/100 characters`}
-        />
-      </div>
-      <Button variant="contained" onClick={handleSubmit}>Submit</Button>
-      {!error && <Typography color="green">{successMessage}</Typography>} 
+    <Box sx={{backgroundColor: 'white', p: 4}}>
+      <Box sx={{marginBottom: '10px'}}>
+        <Box>
+          <Typography><strong>{"Movie: " + selectedMovie.title}</strong></Typography>
+        </Box>
+       {selectedMovie && <Typography>Please leave a review in the box</Typography> }
+      </Box>
+      <Box
+        component="form"
+        noValidate
+        autoComplete="off"
+      >
+        <Box sx={{ width: '240px' }}>
+          <TextField
+            id="outlined-multiline-static"
+            label="Review"
+            multiline
+            rows={4}
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+            placeholder="Please leave a review"
+            error={!!error}
+            helperText={error || `${review.length}/100 characters`}
+            fullWidth
+          />
+        </Box>
+        <Box>
+          <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: '10px', marginBottom: '10px' }}>Submit</Button>
+          {!error && <Typography color="green">{successMessage}</Typography>} 
+        </Box>
+      </Box>
     </Box>
-    </>
   );
-}
+};
+
+export default ReviewInput;

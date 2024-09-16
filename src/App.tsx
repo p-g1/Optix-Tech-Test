@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { movieItem, movieCompanyItem } from './types/types';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { SlRefresh, SlClock } from "react-icons/sl";
+import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ReviewInput from './components/ReviewInput';
-import Modal from './components/Modal';
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { SlRefresh, SlClock } from "react-icons/sl";
 
-export const App = () =>  {
+import ReviewInput from './components/ReviewInput';
+import BasicModal from './components/Modal';
+import Grid from './components/Grid';
+import { movieItem, movieCompanyItem } from './types/types';
+
+export const App = (): JSX.Element =>  {
 	const [movies, setMovies] = useState<movieItem[]>([]);
 	const [movieCompanies, setMovieCompanies] = useState<movieCompanyItem[]>([]);
 	const [formattedMovies, setFormattedMovies] = useState<movieItem[]>([]);
@@ -34,6 +36,7 @@ export const App = () =>  {
 	const fetchData = async () => {
 		setIsLoading(true);
 		setError(null);
+
 		try {
 			const [moviesResponse, companiesResponse] = await Promise.all([
 				fetch('http://localhost:3000/movies'),
@@ -73,78 +76,34 @@ export const App = () =>  {
     }));
     setFormattedMovies(formattedData);
   };
- 
-  const mobileColumns: GridColDef<(typeof formattedMovies)[number]>[] = [
-    { 
-      field: 'title', 
-      headerName: 'Title', 
-      width: 200, 
-      editable: false 
-    },
-    {
-      field: 'averageReview',
-      headerName: 'Rating',
-      width: 120,
-      editable: false,
-    },
-  ];
-
-  const desktopColumns: GridColDef<(typeof formattedMovies)[number]>[] = [
-    ...mobileColumns,
-    {
-      field: 'filmCompany',
-      headerName: 'Film Company',
-      width: 200,
-      editable: false,
-    }
-  ];
 
   return (
     <Box sx={{margin: '10%'}}>
-    <div>
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+      <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <h1 style={{fontSize: '1.2rem'}}>Welcome to Movie database!</h1>
         <Button onClick={refreshData}>{isLoading ? <SlClock /> : <SlRefresh />}</Button> 
-      </div> 
-      
-      <Box sx={{ 
-        height: isMobile ? 300 : 400, 
-        width: '100%', 
-        overflowX: isMobile ? 'auto' : 'hidden' 
-      }}>
-        {
-        (movies.length && movieCompanies.length) ?
-          (<DataGrid
-            rows={formattedMovies}
-            columns={isMobile ? mobileColumns : desktopColumns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            onRowClick={(params) => {
-              setSelectedMovie(params.row);
-              setOpen(true);
-            }}
+      </Box> 
+      <Box sx={{ height: 400, width: '100%', overflowX: isMobile ? 'auto' : 'hidden' }}>
+        {(movies.length && movieCompanies.length) ?
+          (<Grid 
+            formattedMovies={formattedMovies} 
+            isMobile={isMobile} 
+            setSelectedMovie={setSelectedMovie} 
+            setOpen={setOpen} 
           />) 
-        : error && <p style={{ color: 'red' }}>{error}</p>
-      }
-    </Box>
-
-
-    <div>
-      {selectedMovie && (
+          : error && <p style={{ color: 'red' }}>{error}</p>
+        }
+      </Box>
+      <Box sx={{ margin: '10px' }}>
+        {!selectedMovie && <Typography sx={{marginTop: '10px'}}>Select a movie to review</Typography>}
+        {selectedMovie && (
         isMobile ? (
-          open && <Modal movieId={selectedMovie.id} selectedMovie={selectedMovie} open={open} setOpen={setOpen} />
-        ) : (
-          <ReviewInput movieId={selectedMovie.id} selectedMovie={selectedMovie} />
-        )
-      )}
-    </div>
-  </div>
-  </Box>
+            open && <BasicModal movieId={selectedMovie.id} selectedMovie={selectedMovie} open={open} setOpen={setOpen} setSelectedMovie={setSelectedMovie} />
+          ) : (
+            <ReviewInput movieId={selectedMovie.id} selectedMovie={selectedMovie} />
+          )
+        )}
+      </Box>
+    </Box>
   );
-}
+};
