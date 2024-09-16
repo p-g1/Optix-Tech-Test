@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Button, Box, TextField, Typography } from '@mui/material';
 
-import { movieItem } from '../types/types';
+import { formattedMovieItem } from '../types/types';
 
 type ReviewInputProps = {
   movieId: string;
-  selectedMovie: movieItem;
+  selectedMovie: formattedMovieItem;
 };
 
 const ReviewInput = ({ movieId, selectedMovie }: ReviewInputProps): JSX.Element => {
@@ -48,7 +48,7 @@ const ReviewInput = ({ movieId, selectedMovie }: ReviewInputProps): JSX.Element 
   };
 
   return (
-    <Box sx={{backgroundColor: 'white', p: 4}}>
+    <Box sx={{backgroundColor: 'white', p: 4}} data-testid="review-input">
       <Box sx={{marginBottom: '10px'}}>
         <Box>
           <Typography><strong>{"Movie: " + selectedMovie.title}</strong></Typography>

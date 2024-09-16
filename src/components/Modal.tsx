@@ -2,7 +2,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 
 import ReviewInput from './ReviewInput';
-import { movieItem } from '../types/types';
+import { formattedMovieItem } from '../types/types';
 
 const style = {
   position: 'absolute',
@@ -17,10 +17,10 @@ const style = {
 
 type ModalProps = {
   movieId: string;
-  selectedMovie: movieItem;
+  selectedMovie: formattedMovieItem;
   open: boolean;
   setOpen: (open: boolean) => void;
-  setSelectedMovie: (movie: movieItem | null) => void;
+  setSelectedMovie: (movie: formattedMovieItem | null) => void;
 };
 
 const BasicModal = (
@@ -42,6 +42,7 @@ const BasicModal = (
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        data-testid="modal"
     >
       <Box sx={style}>
         <ReviewInput movieId={movieId} selectedMovie={selectedMovie} />

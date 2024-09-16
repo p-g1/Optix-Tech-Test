@@ -9,13 +9,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import ReviewInput from './components/ReviewInput';
 import BasicModal from './components/Modal';
 import Grid from './components/Grid';
-import { movieItem, movieCompanyItem } from './types/types';
+import { movieItem, movieCompanyItem, formattedMovieItem } from './types/types';
 
 export const App = (): JSX.Element =>  {
 	const [movies, setMovies] = useState<movieItem[]>([]);
 	const [movieCompanies, setMovieCompanies] = useState<movieCompanyItem[]>([]);
-	const [formattedMovies, setFormattedMovies] = useState<movieItem[]>([]);
-	const [selectedMovie, setSelectedMovie] = useState<movieItem | null>(null);
+	const [formattedMovies, setFormattedMovies] = useState<formattedMovieItem[]>([]);
+	const [selectedMovie, setSelectedMovie] = useState<formattedMovieItem | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -30,6 +30,7 @@ export const App = (): JSX.Element =>  {
 	useEffect(() => {
 		if (!isLoading && !error) {
 			formatData();
+      
 		}
 	}, [isLoading, error, movies, movieCompanies]);
 
@@ -74,7 +75,7 @@ export const App = (): JSX.Element =>  {
       filmCompany: movieCompanies.find((company) => company.id === movie.filmCompanyId)?.name,
       averageReview: Number((movie.reviews.reduce((acc, i) => acc + i, 0) / movie.reviews.length).toFixed(1))
     }));
-    setFormattedMovies(formattedData);
+    setFormattedMovies(formattedData as formattedMovieItem[]);
   };
 
   return (
@@ -91,11 +92,17 @@ export const App = (): JSX.Element =>  {
             setSelectedMovie={setSelectedMovie} 
             setOpen={setOpen} 
           />) 
-          : error && <p style={{ color: 'red' }}>{error}</p>
+          : error ?
+            <Typography sx={{ color: 'red' }}>{error}</Typography>
+            : <Typography>No movies or companies found</Typography>
         }
       </Box>
       <Box sx={{ margin: '10px' }}>
-        {!selectedMovie && <Typography sx={{marginTop: '10px'}}>Select a movie to review</Typography>}
+        {!!(!selectedMovie &&
+         movies.length && 
+         movieCompanies.length) &&
+         <Typography sx={{marginTop: '10px'}}>Select a movie to review</Typography>
+        }
         {selectedMovie && (
         isMobile ? (
             open && <BasicModal movieId={selectedMovie.id} selectedMovie={selectedMovie} open={open} setOpen={setOpen} setSelectedMovie={setSelectedMovie} />

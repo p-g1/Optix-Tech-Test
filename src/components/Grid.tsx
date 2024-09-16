@@ -1,11 +1,11 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-import { movieItem } from '../types/types';
+import { formattedMovieItem } from '../types/types';
 
 type GridProps = {
-    formattedMovies: movieItem[];
+    formattedMovies: formattedMovieItem[];
     isMobile: boolean;
-    setSelectedMovie: (movie: movieItem) => void;
+    setSelectedMovie: (movie: formattedMovieItem) => void;
     setOpen: (open: boolean) => void;
 };
 
