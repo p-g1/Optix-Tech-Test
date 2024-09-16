@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Box, TextField, Typography } from '@mui/material';
-import { movieItem } from './types';
+import { movieItem } from '../types/types';
 
 interface ReviewInputProps {
   movieId: string;

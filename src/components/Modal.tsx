@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import ReviewInput from './ReviewInput';
-import { movieItem } from './types';
+import { movieItem } from '../types/types';
 
 // const style = {
 //   position: 'absolute' as 'absolute',

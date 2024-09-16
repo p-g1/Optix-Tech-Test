@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { movieItem, movieCompanyItem } from './types';
+import { movieItem, movieCompanyItem } from './types/types';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import ReviewInput from './ReviewInput';
-import Modal from './Modal';
+import ReviewInput from './components/ReviewInput';
+import Modal from './components/Modal';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -15,7 +15,7 @@ export const App = () =>  {
 	const [selectedMovie, setSelectedMovie] = useState<movieItem | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); //implement
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
