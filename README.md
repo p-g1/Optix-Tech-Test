@@ -1,3 +1,9 @@
+To run the project:
+
+1. Clone the repository
+2. Run `docker build -t optix .` from the directory containing the Dockerfile.
+3. Run `docker run -dp 127.0.0.1:3000:3000 optix`
+
 Notes on submission:
 
 - Very much enjoyed the exercise!
@@ -17,6 +23,7 @@ TODO
 
 - Testing is not complete but felt enough to demonstrate. In practice I would include component level spec files too.
 - I have included the coverage folder in the git ignore, but you can see test coverage on the App.tsx file by running npm run test --coverage. There are a couple of branches currently not covered.
+- I'd very much like to remove the focus styling from the grid cells as it is very jarring when interacting with the grid.
 
 ---
 
