@@ -75,7 +75,13 @@ const ReviewInput = ({ movieId, selectedMovie }: ReviewInputProps): JSX.Element 
           />
         </Box>
         <Box>
-          <Button variant="contained" onClick={handleSubmit} sx={{ marginTop: '10px', marginBottom: '10px' }}>Submit</Button>
+          <Button 
+            variant="contained" 
+            sx={{ marginTop: '10px', marginBottom: '10px' }}
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
           {!error && <Typography color="green">{successMessage}</Typography>} 
         </Box>
       </Box>

@@ -81,7 +81,7 @@ export const App = (): JSX.Element =>  {
   return (
     <Box sx={{margin: '10%'}}>
       <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <h1 style={{fontSize: '1.2rem'}}>Welcome to Movie database!</h1>
+        <Typography variant='h1' sx={{fontSize: '1.2rem'}}>Welcome to Movie database!</Typography>
         <Button onClick={refreshData}>{isLoading ? <SlClock /> : <SlRefresh />}</Button> 
       </Box> 
       <Box sx={{ height: 400, width: '100%', overflowX: isMobile ? 'auto' : 'hidden' }}>
